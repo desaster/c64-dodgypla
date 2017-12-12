@@ -17,7 +17,7 @@ module dodgypla_core(
         input   i13,
         input   i14,
         input   i15,
-        output  f0,
+        output  reg f0,
         output  f1,
         output  f2,
         output  f3,
@@ -58,15 +58,20 @@ module dodgypla_core(
     wire p28;
     wire p29;
 
-    wire f0a; /* synthesis syn_keep */
-    wire f0b; /* synthesis syn_keep */
-    wire f1a; /* synthesis syn_keep */
-    wire f2a; /* synthesis syn_keep */
-    wire f3a; /* synthesis syn_keep */
-    wire f4a; /* synthesis syn_keep */
-    wire f5a; /* synthesis syn_keep */
-    wire f6a; /* synthesis syn_keep */
-    wire f7a; /* synthesis syn_keep */
+    wire f0a; /* synthesis syn_keep = 1 */
+    wire f0b; /* synthesis syn_keep = 1 */
+    wire f1a; /* synthesis syn_keep = 1 */
+    wire f2a; /* synthesis syn_keep = 1 */
+    wire f3a; /* synthesis syn_keep = 1 */
+    wire f4a; /* synthesis syn_keep = 1 */
+    wire f5a; /* synthesis syn_keep = 1 */
+    wire f6a; /* synthesis syn_keep = 1 */
+    wire f7a; /* synthesis syn_keep = 1 */
+
+    (* dont_touch *) wire f0_l1;
+    (* dont_touch *) reg f0_l2;
+    (* dont_touch *) reg f0_l3;
+    (* dont_touch *) reg f0_l4;
 
     assign p0 = i1 && i2 && i5 && !i6 && i7 && !i10 && i11 && i13;
     assign p1 = i2 && i5 && i6 && i7 && !i10 && i11 && i13;
@@ -101,7 +106,8 @@ module dodgypla_core(
 
     assign f0a = p0 || p1 || p2 || p3 || p4 || p5 || p6 || p7 || p8 || p9 || p10 || p11 || p12 || p13 || p14 || p15 || p16;
     assign f0b = p17 || p18 || p19 || p20 || p21 || p22 || p23 || p24 || p25 || p26 || p27 || p28;
-    assign f0 = f0a || f0b;
+
+    assign f0_l1 = f0a || f0b;
 
     assign f1a = !(p0);
     assign f1 = f1a;
@@ -123,5 +129,23 @@ module dodgypla_core(
 
     assign f7a = !(p20 || p21 || p22);
     assign f7 = f7a;
+
+    /* extra logic below to add some delay */
+
+    always @(f0_l1) begin
+        f0_l2 = !f0_l1;
+    end
+
+    always @(f0_l2) begin
+        f0_l3 = !f0_l2;
+    end
+
+    always @(f0_l3) begin
+        f0_l4 = !f0_l3;
+    end
+
+    always @(f0_l4) begin
+        f0 = !f0_l4;
+    end
 
 endmodule
